@@ -2,7 +2,7 @@ import MainGrid from "../src/components/MainGrid";
 import Box from "../src/components/Box";
 import {AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet} from "../src/lib/AlurakutCommons";
 import {ProfileRelationsBoxWrapper} from "../src/components/ProfileRelations";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function ProfileSidebar(props) {
     return (
@@ -24,6 +24,29 @@ function ProfileSidebar(props) {
     );
 }
 
+function ProfileRelationsBox(props) {
+    return (
+        <ProfileRelationsBoxWrapper>
+            <h2 className="smallTitle">
+                {props.title} ({props.items.length})
+            </h2>
+
+            <ul>
+                {/*{props.items.map(follower => {*/}
+                {/*    return (*/}
+                {/*        <li key={follower}>*/}
+                {/*            <a href={`https://github.com/${follower.title}`} key={follower.title}>*/}
+                {/*                <img src={follower.image} alt="Foto da comunidade"/>*/}
+                {/*                <span>{follower.title}</span>*/}
+                {/*            </a>*/}
+                {/*        </li>*/}
+                {/*    )*/}
+                {/*})}*/}
+            </ul>
+        </ProfileRelationsBoxWrapper>
+    )
+}
+
 export default function Home() {
     const githubUser = "ImGabreuw";
     const favoriteUsers = [
@@ -39,6 +62,21 @@ export default function Home() {
         title: "Eu odeio acordar cedo",
         image: "https://alurakut.vercel.app/capa-comunidade-01.jpg"
     }]);
+
+    const [followers, setFollowers] = useState([]);
+
+    useEffect(
+        function () {
+            fetch("https://api.github.com/users/ImGabreuw/followers")
+                .then(function (response) {
+                    return response.json()
+                })
+                .then(function (response) {
+                    setFollowers(response)
+                })
+        },
+        []
+    );
 
     return (
         <>
@@ -95,6 +133,8 @@ export default function Home() {
                     </Box>
                 </div>
                 <div className="profileRelationsArea" style={{gridArea: "profileRelationsArea"}}>
+                    <ProfileRelationsBox title="Seguidores" items={followers}/>
+
                     <ProfileRelationsBoxWrapper>
                         <h2 className="smallTitle">
                             Comunidades ({communities.length})
